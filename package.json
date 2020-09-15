@@ -32,15 +32,18 @@
     "@nestjs/core": "^7.0.0",
     "@nestjs/graphql": "^7.6.0",
     "@nestjs/platform-express": "^7.0.0",
+    "@nestjs/typeorm": "^7.1.4",
     "apollo-server-express": "^2.17.0",
     "document-register-element": "1.13.1",
     "graphql": "^15.3.0",
     "graphql-tools": "^6.2.2",
     "next": "9.5.2",
+    "pg": "^8.3.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "~6.5.5"
+    "rxjs": "~6.5.5",
+    "typeorm": "^0.2.26"
   },
   "devDependencies": {
     "@babel/core": "7.9.6",
