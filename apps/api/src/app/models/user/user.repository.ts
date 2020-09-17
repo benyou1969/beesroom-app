@@ -4,7 +4,8 @@ import * as bcrypt from 'bcrypt';
 
 import { User } from '../../entities/user.entity';
 import { AuthSignUpInput } from '../auth/interfaces/auth-sign-up.input';
-import { ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { ConflictException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { AuthSignInInput } from '../auth/interfaces/auth-sign-in.input';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -20,11 +21,22 @@ export class UserRepository extends Repository<User> {
     try {
       return await user.save();
     } catch (error) {
-      if (error.code === "23505") {
+      if (error.code === '23505') {
         throw new ConflictException('Email Already exists');
       } else {
         throw new InternalServerErrorException();
       }
+    }
+  }
+
+  async signIn(authSignInInput: AuthSignInInput): Promise<User> {
+    const { email, password } = authSignInInput;
+    const user = await this.findOne({ email });
+
+    if (user && (await user.validatePassword(password))) {
+      return user;
+    } else {
+    throw new UnauthorizedException("Wrong Credentials!");
     }
   }
 
