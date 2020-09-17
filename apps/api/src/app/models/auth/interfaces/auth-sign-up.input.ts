@@ -5,7 +5,6 @@ import {
   IsNotEmpty,
   Matches,
   IsEmail,
-  IsOptional,
 } from 'class-validator';
 import { InputType, Field } from '@nestjs/graphql';
 

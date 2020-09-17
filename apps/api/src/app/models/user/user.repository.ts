@@ -6,6 +6,7 @@ import { User } from '../../entities/user.entity';
 import { AuthSignUpInput } from '../auth/interfaces/auth-sign-up.input';
 import { ConflictException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { AuthSignInInput } from '../auth/interfaces/auth-sign-in.input';
+import { JwtPayload } from '../auth/interfaces/jwt-payload.interface';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -36,7 +37,7 @@ export class UserRepository extends Repository<User> {
     if (user && (await user.validatePassword(password))) {
       return user;
     } else {
-    throw new UnauthorizedException("Wrong Credentials!");
+      throw new UnauthorizedException('Wrong Credentials!');
     }
   }
 
