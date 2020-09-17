@@ -8,7 +8,7 @@ import { AppResolver } from './app.resolver';
 
 import { UserModule } from './models/user/user.module';
 import { AuthModule } from './models/auth/auth.module';
-import { User } from './entitiy/user.entity';
+import { User } from './entities/user.entity';
 
 @Module({
   imports: [

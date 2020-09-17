@@ -24,7 +24,7 @@ export class User extends GenericEntity {
   avatar: string;
 
   @Field({ nullable: true })
-  @Column({ default: true })
+  @Column({ default: false })
   isOnline: boolean;
 
 
