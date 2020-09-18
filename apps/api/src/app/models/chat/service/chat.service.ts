@@ -18,7 +18,10 @@ export class ChatService {
   ) {}
 
   async messages(): Promise<Message[]> {
-    return await this.messageRepository.find();
+    return await this.messageRepository.find({
+      take: 10,
+      order: { createdAt: "DESC" },
+    });
   }
 
   async addMessage(user: User, content: string): Promise<Message> {
@@ -29,7 +32,7 @@ export class ChatService {
     });
     await this.messageRepository.save(newMessage);
 
-    const messages = await this.messageRepository.find();
+    const messages = await this.messages();
 
     pubsub.publish('messages', {
       messages: [...messages],
@@ -39,7 +42,7 @@ export class ChatService {
   }
 
   async messageAdded(): Promise<any> {
-    const messages = await this.messageRepository.find();
+    const messages = await this.messages();
     setTimeout(
       () =>
         pubsub.publish('messages', {
