@@ -17,7 +17,6 @@ import { JwtStrategy } from '../auth/strategies/jwt-auth.strategy';
         expiresIn: 3600 ,
       },
     }),
-
     TypeOrmModule.forFeature([UserRepository]),
   ],
   providers: [JwtStrategy, UserService, UserResolver],

@@ -1,8 +1,9 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Entity, Unique, Column } from 'typeorm';
+import { Entity, Unique, Column, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { GenericEntity } from './generic.entity';
+import { Message } from './message.entity';
 
 @ObjectType()
 @Entity('users')
@@ -27,6 +28,9 @@ export class User extends GenericEntity {
   @Column({ default: false })
   isOnline: boolean;
 
+  @Field((type) => [Message], { nullable: true })
+  @OneToMany((type) => Message, (message) => message.user, { cascade: true })
+  messages: Message[];
 
   async validatePassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password);

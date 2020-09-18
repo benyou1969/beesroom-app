@@ -9,6 +9,8 @@ import { AppResolver } from './app.resolver';
 import { UserModule } from './models/user/user.module';
 import { AuthModule } from './models/auth/auth.module';
 import { User } from './entities/user.entity';
+import { Message } from './entities/message.entity';
+import { ChatModule } from './models/chat/chat.module';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { User } from './entities/user.entity';
       username: 'ben',
       database: 'beesroom',
       synchronize: true,
-      entities: [User],
+      entities: [User, Message],
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
@@ -26,8 +28,9 @@ import { User } from './entities/user.entity';
       useGlobalPrefix: true,
       context: ({ req }) => ({ req }),
     }),
-    UserModule,
+    ChatModule,
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

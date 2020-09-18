@@ -1,0 +1,40 @@
+import { Repository, EntityRepository } from 'typeorm';
+
+import { UnauthorizedException } from '@nestjs/common';
+import { Message } from '../../entities/message.entity';
+import { UpdateMessage } from './interfaces/update-message.input';
+import { User } from '../../entities/user.entity';
+
+
+@EntityRepository(Message)
+export class MessageRepository extends Repository<Message> {
+  async updateMessage(
+    user: User,
+    updateMessage: UpdateMessage
+  ): Promise<Message> {
+    const { id, content } = updateMessage;
+    const message = await this.findOne({ id });
+    message.content = content;
+    // await message.content = content;
+    if (message.user.id === user.id) {
+      try {
+        await this.save(message);
+        return message;
+      } catch (err) {
+        throw new UnauthorizedException('You are not authorized to do this');
+      }
+    }
+  }
+
+  async deleteMessage(user: User, id: string): Promise<{ success: boolean }> {
+    const message = await this.findOne({ id });
+    if (message.user.id === user.id) {
+      try {
+        await this.remove(message);
+        return { success: true };
+      } catch (error) {
+        return { success: false };
+      }
+    }
+  }
+}
