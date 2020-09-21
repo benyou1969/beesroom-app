@@ -1,23 +1,22 @@
-import React from 'react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { ReactComponent as NxLogo } from '../public/nx-logo-white.svg';
+
+import { ApolloProvider } from '@apollo/client';
+import { useApollo } from '../lib/apollo';
 import './styles.css';
 
 const CustomApp = ({ Component, pageProps }: AppProps) => {
+  const apolloClient = useApollo(pageProps.initialApolloState);
+
   return (
     <>
       <Head>
-        <title>Welcome to web!</title>
+        <title>Bees Room</title>
       </Head>
       <div className="app">
-        <header className="flex">
-          <NxLogo width="75" height="50" />
-          <h1>Welcome to web!</h1>
-        </header>
-        <main>
+        <ApolloProvider client={apolloClient}>
           <Component {...pageProps} />
-        </main>
+        </ApolloProvider>
       </div>
     </>
   );
