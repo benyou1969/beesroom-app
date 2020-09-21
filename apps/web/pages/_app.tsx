@@ -1,9 +1,14 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import {
+  ThemeProvider,
+} from '@material-ui/core/styles';
 
 import { ApolloProvider } from '@apollo/client';
 import { useApollo } from '../lib/apollo';
+import theme from '../lib/theme';
 import './styles.css';
+
 
 const CustomApp = ({ Component, pageProps }: AppProps) => {
   const apolloClient = useApollo(pageProps.initialApolloState);
@@ -15,7 +20,9 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
       </Head>
       <div className="app">
         <ApolloProvider client={apolloClient}>
-          <Component {...pageProps} />
+          <ThemeProvider theme={theme}>
+            <Component {...pageProps} />
+          </ThemeProvider>
         </ApolloProvider>
       </div>
     </>
