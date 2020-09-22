@@ -28,7 +28,7 @@ const Index = () => {
     console.log(error);
   }
   if (authData) {
-    console.log(authData.currentUser.username);
+    console.log(authData.currentUser);
   }
 
   return <div>{JSON.stringify(data.hello)}</div>;

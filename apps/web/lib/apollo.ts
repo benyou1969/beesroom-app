@@ -1,9 +1,25 @@
 import { useMemo } from 'react';
-import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from '@apollo/client';
-import { concatPagination } from '@apollo/client/utilities';
+import { ApolloClient, HttpLink, InMemoryCache, ApolloLink, from, split } from '@apollo/client';
+import { concatPagination, getMainDefinition } from '@apollo/client/utilities';
 import { setContext } from '@apollo/client/link/context';
+import { WebSocketLink } from '@apollo/client/link/ws';
 
 let apolloClient;
+
+const wsLink = process.browser
+  ? new WebSocketLink({
+      uri: 'ws://localhost:3333/graphql',
+      options: {
+        reconnect: true,
+      },
+    })
+  : null;
+
+const httpLink = new HttpLink({
+  uri: 'http://localhost:3333/graphql',
+  credentials: 'same-origin',
+});
+
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('accessToken');
   return {
@@ -14,16 +30,25 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const link = process.browser
+  ? split(
+      ({ query }) => {
+        const definition = getMainDefinition(query);
+        return (
+          definition.kind === 'OperationDefinition' &&
+          definition.operation === 'subscription'
+        );
+      },
+      wsLink,
+      httpLink
+    )
+  : httpLink;
+
+
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: ApolloLink.from([
-      authLink,
-      new HttpLink({
-        uri: 'http://localhost:3333/api/graphql', // Server URL (must be absolute)
-        credentials: 'same-origin',
-      }),
-    ]),
+    link: from([authLink, link]),
     cache: new InMemoryCache(),
   });
 }

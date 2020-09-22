@@ -25,7 +25,7 @@ import { ChatModule } from './models/chat/chat.module';
     GraphQLModule.forRoot({
       autoSchemaFile: true,
       installSubscriptionHandlers: true,
-      useGlobalPrefix: true,
+      useGlobalPrefix: false,
       context: ({ req }) => ({ req }),
     }),
     ChatModule,
