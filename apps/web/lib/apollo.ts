@@ -1,16 +1,29 @@
 import { useMemo } from 'react';
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from '@apollo/client';
 import { concatPagination } from '@apollo/client/utilities';
+import { setContext } from '@apollo/client/link/context';
 
 let apolloClient;
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('accessToken');
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
 
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: new HttpLink({
-      uri: 'http://localhost:3333/api/graphql', // Server URL (must be absolute)
-      credentials: 'same-origin', // Additional fetch() options like `credentials` or `headers`
-    }),
+    link: ApolloLink.from([
+      authLink,
+      new HttpLink({
+        uri: 'http://localhost:3333/api/graphql', // Server URL (must be absolute)
+        credentials: 'same-origin',
+      }),
+    ]),
     cache: new InMemoryCache(),
   });
 }

@@ -18,7 +18,7 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
       <Head>
         <title>Bees Room</title>
       </Head>
-      <div className="app">
+      <div>
         <ApolloProvider client={apolloClient}>
           <ThemeProvider theme={theme}>
             <Component {...pageProps} />
