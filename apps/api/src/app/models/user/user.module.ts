@@ -7,14 +7,16 @@ import { UserResolver } from './user.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from './user.repository';
 import { JwtStrategy } from '../auth/strategies/jwt-auth.strategy';
+import { UserController } from './user.controller';
 
 @Module({
+  controllers: [UserController],
   imports: [
     PassportModule,
     JwtModule.register({
       secret: 'TopSecret51',
       signOptions: {
-        expiresIn: 3600 ,
+        expiresIn: 3600,
       },
     }),
     TypeOrmModule.forFeature([UserRepository]),

@@ -1,5 +1,12 @@
 import { useMemo } from 'react';
-import { ApolloClient, HttpLink, InMemoryCache, ApolloLink, from, split } from '@apollo/client';
+import {
+  ApolloClient,
+  HttpLink,
+  InMemoryCache,
+  ApolloLink,
+  from,
+  split,
+} from '@apollo/client';
 import { concatPagination, getMainDefinition } from '@apollo/client/utilities';
 import { setContext } from '@apollo/client/link/context';
 import { WebSocketLink } from '@apollo/client/link/ws';
@@ -44,11 +51,11 @@ const link = process.browser
     )
   : httpLink;
 
-
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: from([authLink, link]),
+    // link: from([authLink, link]),
+    link: from([link]),
     cache: new InMemoryCache(),
   });
 }

@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { createWriteStream } from 'fs';
 
 import { GetUserGraphQL } from '../auth/decorators/graphql-get-user.decorators';
@@ -23,16 +23,26 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseGuards(GqlAuthGuard)
   async uploadFile(
+    @GetUserGraphQL() user: User,
     @Args({ name: 'file', type: () => GraphQLUpload })
-    { createReadStream, filename }: FileUpload
+    file: FileUpload
   ): Promise<boolean> {
-    console.log(filename);
-    return new Promise(async (resolve, reject) =>
-      createReadStream()
-        .pipe(createWriteStream(`apps/api/src/app/uploads/${filename}`))
-        .on('finish', () => resolve(true))
-        .on('error', () => reject(false))
-    );
+    return await this.userService.uploadProfilePicture(user, file);
+  }
+
+  @Mutation(() => User)
+  @UseGuards(GqlAuthGuard)
+  async updateUserStatus(
+    @GetUserGraphQL() user: User,
+    @Args('status') status: boolean
+  ): Promise<User> {
+    return await this.userService.updateUserStatus(user, status);
+  }
+
+  @Subscription(() => [User!])
+  async onlineUsers(): Promise<User[]> {
+    return await this.userService.onlineUsers();
   }
 }

@@ -245,5 +245,14 @@
   "settings": { "react": { "version": "detect" } },
   "plugins": ["import", "jsx-a11y", "react", "react-hooks"],
   "extends": ["../../.eslintrc"],
-  "ignorePatterns": ["!**/*"]
+  "ignorePatterns": ["!**/*"],
+  "no-restricted-imports": [
+    "error",
+    {
+      "patterns": [
+        "@material-ui/*/*/*",
+        "!@material-ui/core/test-utils/*"
+      ]
+    }
+  ]
 }

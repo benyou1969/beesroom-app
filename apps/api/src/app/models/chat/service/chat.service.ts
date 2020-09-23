@@ -19,8 +19,8 @@ export class ChatService {
 
   async messages(): Promise<Message[]> {
     return await this.messageRepository.find({
-      take: 10,
-      order: { createdAt: "DESC" },
+      order: { createdAt: 'ASC' },
+      cache: 10000,
     });
   }
 
