@@ -14,8 +14,8 @@ import {
 } from '@material-ui/core';
 import { Email, KeyboardArrowRight, Lock } from '@material-ui/icons';
 import { Formik, Field } from 'formik';
-import { gql, useMutation, useQuery } from '@apollo/client';
-import { useSignUpMutation } from '../generated/graphql';
+import { gql, useQuery } from '@apollo/client';
+import { useCurrentUserQuery, useSignUpMutation } from '../generated/graphql';
 
 const useStyles = makeStyles((theme) => ({
   bodyBackGround: {
@@ -25,21 +25,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GET_CURRENT_USER = gql`
-  query {
-    currentUser {
-      id
-      email
-      username
-    }
-  }
-`;
 const SignUp = () => {
   const router = useRouter();
 
   const classes = useStyles();
   const [signup, { error: mutationError, data }] = useSignUpMutation();
-  const { error, data: authData } = useQuery(GET_CURRENT_USER);
+  const { error, data: authData, loading } = useCurrentUserQuery();
   if (authData) {
     authData.currentUser.email ? router.push('/') : null;
   }
@@ -57,6 +48,7 @@ const SignUp = () => {
     }
   }
 
+  if (loading) return <h2>loading...</h2>;
   return (
     <>
       <div>
