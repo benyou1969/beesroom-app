@@ -2,12 +2,12 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { ThemeProvider } from '@material-ui/core/styles';
 
-import { ApolloProvider } from '@apollo/client';
-// import { apolloClient, useApollo } from '../lib/apollo';
 import theme from '../lib/theme';
 import './styles.css';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { useEffect } from 'react';
+// import { useApollo } from '../lib/apollo';
+// import { ApolloProvider } from '@apollo/client';
 
 const CustomApp = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
@@ -16,6 +16,8 @@ const CustomApp = ({ Component, pageProps }: AppProps) => {
       jssStyles.parentElement!.removeChild(jssStyles);
     }
   }, []);
+
+  // const apolloClient = useApollo(pageProps.initialApolloState);
 
   return (
     <>

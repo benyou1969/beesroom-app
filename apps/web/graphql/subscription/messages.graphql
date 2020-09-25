@@ -1,0 +1,12 @@
+subscription Messages {
+  messages {
+    id
+    content
+    createdAt
+    user {
+      id
+      avatar
+      username
+    }
+  }
+}

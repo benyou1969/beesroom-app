@@ -1,0 +1,12 @@
+mutation AddMessage($content: String!) {
+  addMessage(content: $content) {
+    createdAt
+    id
+    content
+    user {
+      id
+      avatar
+      username
+    }
+  }
+}

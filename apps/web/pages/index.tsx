@@ -1,25 +1,14 @@
 import { gql, useQuery } from '@apollo/client';
-
-const HELLO_QUERY = gql`
-  {
-    hello
-  }
-`;
-const GET_CURRENT_USER = gql`
-  query {
-    currentUser {
-      username
-      email
-      isOnline
-    }
-  }
-`;
+import { useCurrentUserQuery, useHelloQuery } from '../generated/graphql';
+import { withApollo } from '../utils/with-apollo';
 
 const Index = () => {
-  const { data, loading, error } = useQuery(HELLO_QUERY);
-  const { loading: authLoading, error: AuthError, data: authData } = useQuery(
-    GET_CURRENT_USER
-  );
+  const { data, loading, error } = useHelloQuery();
+  const {
+    loading: authLoading,
+    error: AuthError,
+    data: authData,
+  } = useCurrentUserQuery();
 
   if (loading) {
     return <h2>loading...</h2>;
@@ -34,4 +23,4 @@ const Index = () => {
   return <div>{JSON.stringify(data.hello)}</div>;
 };
 
-export default Index;
+export default withApollo({ ssr: true })(Index);

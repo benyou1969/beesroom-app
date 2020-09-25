@@ -40,7 +40,7 @@ export const initOnContext = (ac, ctx) => {
 
   // Add apolloClient to NextPageContext & NextAppContext.
   // This allows us to consume the apolloClient inside our
-  // custom `getInitialProps({ apolloClient })`.
+  // custom `_({ apolloClient })`.
   ctx.apolloClient = apolloClient;
   if (inAppContext) {
     ctx.ctx.apolloClient = apolloClient;

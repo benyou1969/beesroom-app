@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { gql, useMutation } from '@apollo/client';
 import {
   Card,
   TextField,
@@ -13,33 +12,21 @@ import {
 } from '@material-ui/core';
 import { Email, KeyboardArrowRight, Lock } from '@material-ui/icons';
 import { Formik, Field } from 'formik';
-
-const LOGIN_CREDENTIALS = gql`
-  mutation($email: String!, $password: String!) {
-    signIn(authSignInInput: { email: $email, password: $password }) {
-      user {
-        createdAt
-        email
-        username
-      }
-      accessToken
-    }
-  }
-`;
+import { withApollo } from '../utils/with-apollo';
+import {
+  CurrentUserDocument,
+  CurrentUserQuery,
+  useSignInMutation,
+} from '../generated/graphql';
+import { setAccessToken } from '../utils/access-token';
 
 const Login = () => {
   const router = useRouter();
 
-  const [login, { error: mutationError, data }] = useMutation(
-    LOGIN_CREDENTIALS
-  );
+  const [login, { error: mutationError, data }] = useSignInMutation();
 
   if (data) {
     const { signIn } = data;
-    const saveToken = async () => {
-      return await localStorage.setItem('accessToken', signIn.accessToken);
-    };
-    saveToken();
     if (signIn) {
       router.push('/');
     } else {
@@ -64,9 +51,25 @@ const Login = () => {
                   initialValues={{ email: '', password: '' }}
                   onSubmit={async ({ email, password }, { setSubmitting }) => {
                     setSubmitting(true);
-                    const accessToken = await login({
+                    const response = await login({
                       variables: { email, password },
+
+                      update: (store, { data }) => {
+                        if (!data) {
+                          return null;
+                        }
+
+                        store.writeQuery<CurrentUserQuery>({
+                          query: CurrentUserDocument,
+                          data: {
+                            currentUser: data.signIn.user,
+                          },
+                        });
+                      },
                     }).catch((err) => console.log(err));
+                    if (response && response.data) {
+                      setAccessToken(response.data.signIn.accessToken);
+                    }
                     setSubmitting(false);
                   }}
                 >
@@ -157,4 +160,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withApollo({ ssr: true })(Login);

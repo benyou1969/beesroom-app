@@ -1,6 +1,3 @@
-// import { gql, useQuery } from '@apollo/client';
-// import { GetServerSideProps } from 'next';
-// import { apolloClient } from '../lib/apollo';
 
 import { withApollo } from '../utils/with-apollo';
 import { useHelloQuery } from '../generated/graphql';

@@ -1,0 +1,7 @@
+subscription OnlineUsers {
+  onlineUsers {
+    id
+    username
+    avatar
+  }
+}

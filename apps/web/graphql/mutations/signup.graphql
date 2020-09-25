@@ -3,5 +3,11 @@ mutation signUp($username: String!, $email: String!, $password: String!) {
     authSignUpInput: { username: $username, email: $email, password: $password }
   ) {
     accessToken
+    user {
+      username
+      email
+      avatar
+      isOnline
+    }
   }
 }

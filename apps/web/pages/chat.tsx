@@ -4,65 +4,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardContent, Avatar, TextField } from '@material-ui/core';
 import { Delete as DeleteIcon } from '@material-ui/icons';
 
-import { gql, useMutation, useSubscription, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-
-const GET_MESSAGES = gql`
-  subscription {
-    messages {
-      id
-      content
-      createdAt
-      user {
-        id
-        avatar
-        username
-      }
-    }
-  }
-`;
-const GET_ONLINE_USERS = gql`
-  subscription {
-    onlineUsers {
-      id
-      username
-      avatar
-    }
-  }
-`;
-
-const POST_MESSAGE = gql`
-  mutation($content: String!) {
-    addMessage(content: $content) {
-      createdAt
-      id
-      content
-      user {
-        id
-        avatar
-        username
-      }
-    }
-  }
-`;
-
-const DELETE_MESSAGE = gql`
-  mutation($id: String!) {
-    deleteMessage(id: $id) {
-      success
-    }
-  }
-`;
-
-const GET_CURRENT_USER = gql`
-  query {
-    currentUser {
-      id
-      email
-      username
-    }
-  }
-`;
+import { withApollo } from '../utils/with-apollo';
+import {
+  useAddMessageMutation,
+  useCurrentUserQuery,
+  useDeleteMessageMutation,
+  useMessagesSubscription,
+  useOnlineUsersSubscription,
+} from '../generated/graphql';
 
 const useStyles = makeStyles((theme) => ({
   large: {
@@ -91,14 +41,14 @@ const useStyles = makeStyles((theme) => ({
 const Chat = () => {
   const router = useRouter();
 
-  const { loading, error, data: authData } = useQuery(GET_CURRENT_USER);
+  const { loading, error, data: authData } = useCurrentUserQuery();
   const [state, setState] = useState({ content: '' });
   const [showOptions, setShowOptions] = useState(false);
 
-  const { data } = useSubscription(GET_MESSAGES);
-  const { data: onlineUsers } = useSubscription(GET_ONLINE_USERS);
-  const [postMessage] = useMutation(POST_MESSAGE);
-  const [deleteMessage] = useMutation(DELETE_MESSAGE);
+  const { data } = useMessagesSubscription();
+  const { data: onlineUsers } = useOnlineUsersSubscription();
+  const [postMessage] = useAddMessageMutation();
+  const [deleteMessage] = useDeleteMessageMutation();
   const classes = useStyles();
 
   const onSend = () => {
@@ -107,18 +57,22 @@ const Chat = () => {
     }
     setState({ ...state, content: '' });
   };
-  if (loading) return <p>Loading...</p>;
-  if (error) {
-    router.push('/login');
-  }
+  // if (loading) return <p>Loading...</p>;
+  // if (!authData) return null;
+  // if (error) {
+  // console.log(error);
+  // router.push('/login');
+  // }
   const dateFormater = (sentAt) => {
     let date = new Date(sentAt);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
-
-  const handleDeletingMessage = (id) => {
-    console.log('Hello');
-  };
+  // if (data) {
+  //   return <div>{JSON.stringify(data)}</div>;
+  // }
+  // const handleDeletingMessage = (id) => {
+  //   console.log('Hello');
+  // };
   if (!data) return null;
   return (
     <>
@@ -137,19 +91,19 @@ const Chat = () => {
                         display: 'flex',
                         margin: `10px 0`,
                         justifyContent:
-                          user.id === authData.currentUser.id
-                            ? 'flex-end'
-                            : 'flex-start',
+                        user.id === authData.currentUser.id
+                        ? 'flex-end'
+                        : 'flex-start',
                       }}
                       key={id}
                     >
                       <Avatar
-                        alt={user.fullName}
+                        alt={user.username}
                         src={user.avatar}
                         style={{
                           marginRight: 10,
                           display:
-                            user.id === authData.currentUser.id ? 'none' : '',
+                          user.id === authData.currentUser.id ? 'none' : '',
                         }}
                       >
                         {user.avatar ? null : `${user.username.charAt(0)}`}
@@ -160,9 +114,9 @@ const Chat = () => {
                           id="messageBody"
                           style={{
                             background:
-                              user.id === authData.currentUser.id
-                                ? `rgb(239, 206,74)`
-                                : `#dfe6e9b0`,
+                            user.id === authData.currentUser.id
+                            ? `rgb(239, 206,74)`
+                            : `#dfe6e9b0`,
                             padding: `4px 10px`,
                             borderRadius: `4px`,
                           }}
@@ -233,4 +187,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default withApollo({ ssr: false })(Chat);

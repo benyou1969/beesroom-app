@@ -26,7 +26,11 @@ import { ChatModule } from './models/chat/chat.module';
       autoSchemaFile: true,
       installSubscriptionHandlers: true,
       useGlobalPrefix: false,
-      context: ({ req }) => ({ req }),
+      context: ({ req, res }) => ({ req, res }),
+      cors: {
+        origin: 'http://localhost:4200',
+        credentials: true,
+      },
     }),
     ChatModule,
     AuthModule,

@@ -1,11 +1,11 @@
-import { Args, Resolver, Mutation, Query } from '@nestjs/graphql';
+import { Args, Resolver, Mutation, Query, Context } from '@nestjs/graphql';
 
 import { User } from '../../../entities/user.entity';
 import { AuthService } from '../service/auth.service';
 import { AuthSignUpInput } from '../interfaces/auth-sign-up.input';
 import { AuthSignInInput } from '../interfaces/auth-sign-in.input';
 import { GqlAuthGuard } from '../guards/graphql-jwt-auth.guard';
-import { UseGuards } from '@nestjs/common';
+import { Res, UseGuards } from '@nestjs/common';
 import { GetUserGraphQL } from '../decorators/graphql-get-user.decorators';
 import { UserWithAccessToken } from '../interfaces/user-with-access-token.input';
 
@@ -15,21 +15,24 @@ export class AuthResolver {
 
   @Mutation(() => UserWithAccessToken)
   async signUp(
-    @Args('authSignUpInput') authSignUpInput: AuthSignUpInput
+    @Args('authSignUpInput') authSignUpInput: AuthSignUpInput,
+    @Context() ctx
   ): Promise<UserWithAccessToken> {
-    return await this.authService.signUp(authSignUpInput);
+    return await this.authService.signUp(authSignUpInput, ctx);
   }
 
   @Mutation(() => UserWithAccessToken)
   async signIn(
-    @Args('authSignInInput') authSignInInput: AuthSignInInput
+    @Args('authSignInInput') authSignInInput: AuthSignInInput,
+    @Context() ctx
   ): Promise<UserWithAccessToken> {
-    return await this.authService.signIn(authSignInInput);
+    return await this.authService.signIn(authSignInInput, ctx);
   }
 
   @Query(() => User!)
   @UseGuards(GqlAuthGuard)
   async currentUser(@GetUserGraphQL() user: User): Promise<User> {
+    console.log('hit');
     return this.authService.getCurrentUser(user);
   }
 }

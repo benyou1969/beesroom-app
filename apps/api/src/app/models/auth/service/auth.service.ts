@@ -17,14 +17,20 @@ export class AuthService {
     private jwtService: JwtService
   ) {}
 
-  async signUp(authSignUpInput: AuthSignUpInput): Promise<UserWithAccessToken> {
+  async signUp(
+    authSignUpInput: AuthSignUpInput,
+    ctx
+  ): Promise<UserWithAccessToken> {
     const user = await this.userRepository.signUp(authSignUpInput);
-    return await this.createToken(user.email, user);
+    return await this.createToken(user.email, user, ctx);
   }
 
-  async signIn(authSignInInput: AuthSignInInput): Promise<UserWithAccessToken> {
+  async signIn(
+    authSignInInput: AuthSignInInput,
+    ctx
+  ): Promise<UserWithAccessToken> {
     const user = await this.userRepository.signIn(authSignInInput);
-    return await this.createToken(user.email, user);
+    return await this.createToken(user.email, user, ctx);
   }
 
   async getCurrentUser(user: User): Promise<User> {
@@ -33,10 +39,12 @@ export class AuthService {
 
   private async createToken(
     email: string,
-    user: User
+    user: User,
+    ctx
   ): Promise<UserWithAccessToken> {
     const payload: JwtPayload = { email };
     const accessToken = await this.jwtService.sign(payload);
+    ctx.res.cookie('accessToken', accessToken)
     const userWithAccessToken: UserWithAccessToken = { accessToken, user };
 
     return userWithAccessToken;

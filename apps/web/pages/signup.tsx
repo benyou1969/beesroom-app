@@ -16,6 +16,8 @@ import { Email, KeyboardArrowRight, Lock } from '@material-ui/icons';
 import { Formik, Field } from 'formik';
 import { gql, useQuery } from '@apollo/client';
 import { useCurrentUserQuery, useSignUpMutation } from '../generated/graphql';
+import { withApollo } from '../utils/with-apollo';
+import { getAccessToken } from '../utils/access-token';
 
 const useStyles = makeStyles((theme) => ({
   bodyBackGround: {
@@ -37,11 +39,8 @@ const SignUp = () => {
 
   if (data) {
     const { signUp } = data;
-    const saveToken = async () => {
-      return await localStorage.setItem('accessToken', signUp.accessToken);
-    };
-    saveToken();
-    if (signUp) {
+    getAccessToken()
+    if (signUp.email) {
       router.push('/');
     } else {
       return null;
@@ -177,4 +176,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default withApollo({ ssr: true })(SignUp);
