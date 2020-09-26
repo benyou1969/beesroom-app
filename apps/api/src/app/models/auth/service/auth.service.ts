@@ -7,7 +7,9 @@ import { UserRepository } from '../../user/user.repository';
 import { AuthSignInInput } from '../interfaces/auth-sign-in.input';
 import { AuthSignUpInput } from '../interfaces/auth-sign-up.input';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
+import { MyContext } from '../interfaces/my-context.interface';
 import { UserWithAccessToken } from '../interfaces/user-with-access-token.input';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +21,7 @@ export class AuthService {
 
   async signUp(
     authSignUpInput: AuthSignUpInput,
-    ctx
+    ctx: MyContext
   ): Promise<UserWithAccessToken> {
     const user = await this.userRepository.signUp(authSignUpInput);
     return await this.createToken(user.email, user, ctx);
@@ -27,7 +29,7 @@ export class AuthService {
 
   async signIn(
     authSignInInput: AuthSignInInput,
-    ctx
+    ctx: MyContext
   ): Promise<UserWithAccessToken> {
     const user = await this.userRepository.signIn(authSignInInput);
     return await this.createToken(user.email, user, ctx);
@@ -40,13 +42,37 @@ export class AuthService {
   private async createToken(
     email: string,
     user: User,
-    ctx
+    { req, res }: MyContext
   ): Promise<UserWithAccessToken> {
     const payload: JwtPayload = { email };
     const accessToken = await this.jwtService.sign(payload);
-    ctx.res.cookie('accessToken', accessToken)
-    const userWithAccessToken: UserWithAccessToken = { accessToken, user };
 
-    return userWithAccessToken;
+    res.cookie('accessToken', accessToken, { httpOnly: true });
+    const jid = await this.jwtService.sign(payload, {
+      expiresIn: '10d',
+    });
+
+    res.cookie('jid', jid, {
+      httpOnly: true,
+    });
+
+    return { accessToken, user };
+  }
+
+  async refreshToken(user: User, res: Response) {
+    const payload: JwtPayload = { email: user.email };
+    const jid = await this.jwtService.sign(payload, {
+      expiresIn: '10d',
+    });
+
+    res.cookie('jid', jid, {
+      httpOnly: true,
+    });
+
+    await res.send({
+      jid: jid,
+    });
   }
 }
+
+

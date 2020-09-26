@@ -1,6 +1,5 @@
-import { gql, useQuery } from '@apollo/client';
+import { GetServerSideProps } from 'next';
 import { useCurrentUserQuery, useHelloQuery } from '../generated/graphql';
-import { withApollo } from '../utils/with-apollo';
 
 const Index = () => {
   const { data, loading, error } = useHelloQuery();
@@ -10,9 +9,6 @@ const Index = () => {
     data: authData,
   } = useCurrentUserQuery();
 
-  if (loading) {
-    return <h2>loading...</h2>;
-  }
   if (error) {
     console.log(error);
   }
@@ -20,7 +16,15 @@ const Index = () => {
     console.log(authData.currentUser);
   }
 
-  return <div>{JSON.stringify(data.hello)}</div>;
+  if (loading) return <h2>loading...</h2>;
+
+  return <div>{data.hello}</div>;
+};
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  console.log(ctx);
+  return {
+    props: {},
+  };
 };
 
-export default withApollo({ ssr: true })(Index);
+export default Index;

@@ -40,6 +40,7 @@
     "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.4.4",
     "@nestjs/typeorm": "^7.1.4",
+    "@sotnikov/next-with-apollo": "^6.0.0-beta.2",
     "apollo-server-express": "^2.17.0",
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.3.1",
@@ -54,6 +55,7 @@
     "graphql-tools": "^6.2.2",
     "next": "9.5.2",
     "next-apollo": "^5.0.0",
+    "next-with-apollo": "^5.1.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^8.3.3",
@@ -63,6 +65,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.5.5",
     "typeorm": "^0.2.26",
+    "universal-cookie": "^4.0.4",
     "uuid": "^8.3.0"
   },
   "devDependencies": {

@@ -5,7 +5,6 @@ import { Card, CardContent, Avatar, TextField } from '@material-ui/core';
 import { Delete as DeleteIcon } from '@material-ui/icons';
 
 import { useRouter } from 'next/router';
-import { withApollo } from '../utils/with-apollo';
 import {
   useAddMessageMutation,
   useCurrentUserQuery,
@@ -57,22 +56,16 @@ const Chat = () => {
     }
     setState({ ...state, content: '' });
   };
-  // if (loading) return <p>Loading...</p>;
-  // if (!authData) return null;
-  // if (error) {
-  // console.log(error);
-  // router.push('/login');
-  // }
+  if (error) {
+    if (error.message === 'Unauthorized') {
+      router.push('/login');
+    }
+  }
+  if (!authData) return null;
   const dateFormater = (sentAt) => {
     let date = new Date(sentAt);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
-  // if (data) {
-  //   return <div>{JSON.stringify(data)}</div>;
-  // }
-  // const handleDeletingMessage = (id) => {
-  //   console.log('Hello');
-  // };
   if (!data) return null;
   return (
     <>
@@ -91,9 +84,9 @@ const Chat = () => {
                         display: 'flex',
                         margin: `10px 0`,
                         justifyContent:
-                        user.id === authData.currentUser.id
-                        ? 'flex-end'
-                        : 'flex-start',
+                          user.id === authData.currentUser.id
+                            ? 'flex-end'
+                            : 'flex-start',
                       }}
                       key={id}
                     >
@@ -103,7 +96,7 @@ const Chat = () => {
                         style={{
                           marginRight: 10,
                           display:
-                          user.id === authData.currentUser.id ? 'none' : '',
+                            user.id === authData.currentUser.id ? 'none' : '',
                         }}
                       >
                         {user.avatar ? null : `${user.username.charAt(0)}`}
@@ -114,9 +107,9 @@ const Chat = () => {
                           id="messageBody"
                           style={{
                             background:
-                            user.id === authData.currentUser.id
-                            ? `rgb(239, 206,74)`
-                            : `#dfe6e9b0`,
+                              user.id === authData.currentUser.id
+                                ? `rgb(239, 206,74)`
+                                : `#dfe6e9b0`,
                             padding: `4px 10px`,
                             borderRadius: `4px`,
                           }}
@@ -130,7 +123,6 @@ const Chat = () => {
                               aria-label="delete"
                               size="small"
                               disableRipple
-
                             >
                               <DeleteIcon fontSize="small" />
                             </IconButton>
@@ -187,4 +179,4 @@ const Chat = () => {
   );
 };
 
-export default withApollo({ ssr: false })(Chat);
+export default Chat;

@@ -19,6 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: 'TopSecret51',
     });
   }
+
   async validate(payload: JwtPayload): Promise<User> {
     const { email } = payload;
     const user = await this.userRepository.findOne({ email });

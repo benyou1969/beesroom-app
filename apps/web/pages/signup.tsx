@@ -16,7 +16,7 @@ import { Email, KeyboardArrowRight, Lock } from '@material-ui/icons';
 import { Formik, Field } from 'formik';
 import { gql, useQuery } from '@apollo/client';
 import { useCurrentUserQuery, useSignUpMutation } from '../generated/graphql';
-import { withApollo } from '../utils/with-apollo';
+import { withApollo } from '../lib/with-apollo';
 import { getAccessToken } from '../utils/access-token';
 
 const useStyles = makeStyles((theme) => ({

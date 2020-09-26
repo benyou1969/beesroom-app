@@ -8,6 +8,7 @@ import { GqlAuthGuard } from '../guards/graphql-jwt-auth.guard';
 import { Res, UseGuards } from '@nestjs/common';
 import { GetUserGraphQL } from '../decorators/graphql-get-user.decorators';
 import { UserWithAccessToken } from '../interfaces/user-with-access-token.input';
+import { MyContext } from '../interfaces/my-context.interface';
 
 @Resolver((of) => User)
 export class AuthResolver {
@@ -16,7 +17,7 @@ export class AuthResolver {
   @Mutation(() => UserWithAccessToken)
   async signUp(
     @Args('authSignUpInput') authSignUpInput: AuthSignUpInput,
-    @Context() ctx
+    @Context() ctx: MyContext
   ): Promise<UserWithAccessToken> {
     return await this.authService.signUp(authSignUpInput, ctx);
   }
@@ -24,7 +25,7 @@ export class AuthResolver {
   @Mutation(() => UserWithAccessToken)
   async signIn(
     @Args('authSignInInput') authSignInInput: AuthSignInInput,
-    @Context() ctx
+    @Context() ctx: MyContext
   ): Promise<UserWithAccessToken> {
     return await this.authService.signIn(authSignInInput, ctx);
   }

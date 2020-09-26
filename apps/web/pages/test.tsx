@@ -1,5 +1,5 @@
 
-import { withApollo } from '../utils/with-apollo';
+import { withApollo } from '../lib/with-apollo';
 import { useHelloQuery } from '../generated/graphql';
 
 // const TEST_QUERY = gql`

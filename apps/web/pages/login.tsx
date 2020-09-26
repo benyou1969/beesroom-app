@@ -12,7 +12,6 @@ import {
 } from '@material-ui/core';
 import { Email, KeyboardArrowRight, Lock } from '@material-ui/icons';
 import { Formik, Field } from 'formik';
-import { withApollo } from '../utils/with-apollo';
 import {
   CurrentUserDocument,
   CurrentUserQuery,
@@ -160,4 +159,4 @@ const Login = () => {
   );
 };
 
-export default withApollo({ ssr: true })(Login);
+export default Login;
