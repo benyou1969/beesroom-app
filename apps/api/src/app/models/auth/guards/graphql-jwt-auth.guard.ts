@@ -6,10 +6,14 @@ import { AuthGuard } from '@nestjs/passport';
 export class GqlAuthGuard extends AuthGuard('jwt') {
   getRequest(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context);
-    ctx.getContext().req.headers.authorization = `Bearer ${
-      ctx.getContext().req.cookies.accessToken
-    }`;
+    const request = ctx.getContext().req;
+    console.log(request);
+    if (request.cookies.jid) {
+      request.headers.authorization = `Bearer ${request.cookies.jid}`;
+    } else if (request.cookies.jid) {
+      request.headers.authorization = `Bearer ${request.cookies.accessToken}`;
+    }
+
     return ctx.getContext().req;
   }
 }
-8

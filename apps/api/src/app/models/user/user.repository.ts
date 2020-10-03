@@ -20,7 +20,6 @@ export class UserRepository extends Repository<User> {
     user.avatar = null;
 
     try {
-      console.log(user)
       return await user.save();
     } catch (error) {
       if (error.code === '23505') {

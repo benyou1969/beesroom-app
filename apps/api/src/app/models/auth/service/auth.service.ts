@@ -9,7 +9,7 @@ import { AuthSignUpInput } from '../interfaces/auth-sign-up.input';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { MyContext } from '../interfaces/my-context.interface';
 import { UserWithAccessToken } from '../interfaces/user-with-access-token.input';
-import { Response } from 'express';
+import { Response, NextFunction } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -36,6 +36,7 @@ export class AuthService {
   }
 
   async getCurrentUser(user: User): Promise<User> {
+    console.log(user.username);
     return user;
   }
 
@@ -44,35 +45,55 @@ export class AuthService {
     user: User,
     { req, res }: MyContext
   ): Promise<UserWithAccessToken> {
-    const payload: JwtPayload = { email };
-    const accessToken = await this.jwtService.sign(payload);
+    const payload: JwtPayload = {
+      email: user.email,
+      tokenVersion: user.tokenVersion,
+    };
+    const accessToken = await this.jwtService.sign(payload, {
+      expiresIn: '15s',
+    });
 
-    res.cookie('accessToken', accessToken, { httpOnly: true });
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+    });
     const jid = await this.jwtService.sign(payload, {
       expiresIn: '10d',
     });
 
     res.cookie('jid', jid, {
       httpOnly: true,
+      // path: '/api/auth/refresh-token',
+      // expires: new Date(Date.now() + 900000),
     });
-
     return { accessToken, user };
   }
 
+  async incrementTokenVersion(user: User) {
+    const found = await this.userRepository.findOne({ id: user.id });
+    found.tokenVersion = found.tokenVersion + 1;
+    await found.save();
+    return found.tokenVersion;
+  }
+
   async refreshToken(user: User, res: Response) {
-    const payload: JwtPayload = { email: user.email };
+    const tokenVersion = await this.incrementTokenVersion(user);
+    const payload: JwtPayload = {
+      email: user.email,
+      tokenVersion,
+    };
     const jid = await this.jwtService.sign(payload, {
       expiresIn: '10d',
     });
 
     res.cookie('jid', jid, {
       httpOnly: true,
+      // path: '/api/auth/refresh-token',
+      expires: new Date(Date.now() + 900000),
     });
-
-    await res.send({
+    res.clearCookie('accessToken');
+    console.log('jid', jid);
+    return res.send({
       jid: jid,
     });
   }
 }
-
-

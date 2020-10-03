@@ -41,11 +41,16 @@
     "@nestjs/platform-express": "^7.4.4",
     "@nestjs/typeorm": "^7.1.4",
     "@sotnikov/next-with-apollo": "^6.0.0-beta.2",
+    "@types/jwt-decode": "^2.2.1",
+    "apollo-link-token-refresh": "^0.3.2",
     "apollo-server-express": "^2.17.0",
     "bcrypt": "^5.0.0",
+    "cache-manager": "^3.4.0",
+    "cache-manager-redis-store": "^2.0.0",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
     "clsx": "^1.1.1",
+    "cookie": "^0.4.1",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "document-register-element": "1.13.1",
@@ -53,8 +58,8 @@
     "graphql": "^15.3.0",
     "graphql-subscriptions": "^1.1.0",
     "graphql-tools": "^6.2.2",
+    "jwt-decode": "^3.0.0-beta.2",
     "next": "9.5.2",
-    "next-apollo": "^5.0.0",
     "next-with-apollo": "^5.1.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
@@ -80,7 +85,6 @@
     "@graphql-codegen/cli": "1.17.8",
     "@graphql-codegen/typescript": "1.17.8",
     "@graphql-codegen/typescript-operations": "^1.17.8",
-    "@graphql-codegen/typescript-react-apollo": "1.17.8",
     "@nestjs/schematics": "^7.0.0",
     "@nestjs/testing": "^7.0.0",
     "@nrwl/cypress": "10.2.0",
@@ -120,10 +124,5 @@
     "ts-node": "~7.0.0",
     "tslint": "~6.0.0",
     "typescript": "~3.9.3"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   }
 }

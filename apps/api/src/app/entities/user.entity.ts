@@ -28,6 +28,9 @@ export class User extends GenericEntity {
   @Column({ default: false })
   isOnline: boolean;
 
+  @Column("int",{ default: 0 })
+  tokenVersion: number;
+
   @Field((type) => [Message], { nullable: true })
   @OneToMany((type) => Message, (message) => message.user, { cascade: true })
   messages: Message[];

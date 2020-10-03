@@ -45,7 +45,7 @@
 
 import { gql, useQuery } from '@apollo/client';
 import { getDataFromTree } from '@apollo/client/react/ssr';
-import { useCurrentUserQuery, useHelloQuery } from '../generated/graphql';
+import { CurrentUserDocument, useCurrentUserQuery, useHelloQuery } from '../generated/graphql';
 import withApollo from '../lib/with-apollo';
 import App from 'next/app';
 import { useRouter } from 'next/router';
@@ -77,35 +77,26 @@ const Private = ({ data1 }) => {
     }
   }
 
-  if (authData) return 'fuck';
   return <div>{data.hello}</div>;
 
-  // return (
-  //   <div>
-  //     {data.hello} {}
-  //   </div>
-  // );
-};
-export const getServerSideProps = async ({ req, query, res }) => {
-  console.log(query);
-  return { props: {} };
 };
 
+
 // export const getInitialProps = async (ctx) => {
-// // export const getServerSideProps = async (ctx) => {
-//   // console.log(context.req.headers);
-//   // const apolloClient: ApolloClient<HelloQuery> = initializeApollo();
-//   // const response = await apolloClient.query({
-//   //   query: HelloDocument,
-//   // });
-//   // console.log(response);
-//   const apolloClient = ctx.apolloClient;
-//   console.log(apolloClient);
-//   // Fetch data from external API
-//   const res = await fetch(`http://jsonplaceholder.typicode.com/users`);
-//   const data1 = await res.json();
-//   // Pass data to the page via props
-//   return { props: { data1 } };
-// };
+export const getServerSideProps = async (ctx) => {
+  // console.log(context.req.headers);
+  // const apolloClient: ApolloClient<HelloQuery> = initializeApollo();
+  const response = await ctx.apolloClient.query({
+    query: CurrentUserDocument,
+  });
+  // console.log(response);
+
+  // console.log(apolloClient);
+  // Fetch data from external API
+  const res = await fetch(`http://jsonplaceholder.typicode.com/users`);
+  const data1 = await res.json();
+  // Pass data to the page via props
+  return { props: { data1 } };
+};
 
 export default Private;

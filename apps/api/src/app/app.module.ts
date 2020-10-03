@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, CacheModule } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import * as redisStore from 'cache-manager-redis-store';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -26,11 +27,18 @@ import { ChatModule } from './models/chat/chat.module';
       autoSchemaFile: true,
       installSubscriptionHandlers: true,
       useGlobalPrefix: false,
+      tracing: true,
       context: ({ req, res }) => ({ req, res }),
       cors: {
         origin: 'http://localhost:4200',
         credentials: true,
       },
+    }),
+    CacheModule.register({
+      ttl: 10,
+      store: redisStore,
+      host: 'localhost',
+      port: 6379,
     }),
     ChatModule,
     AuthModule,

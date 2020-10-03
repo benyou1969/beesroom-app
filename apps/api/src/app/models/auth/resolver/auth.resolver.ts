@@ -33,7 +33,6 @@ export class AuthResolver {
   @Query(() => User!)
   @UseGuards(GqlAuthGuard)
   async currentUser(@GetUserGraphQL() user: User): Promise<User> {
-    console.log('hit');
     return this.authService.getCurrentUser(user);
   }
 }

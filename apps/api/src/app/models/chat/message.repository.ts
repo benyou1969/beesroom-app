@@ -22,7 +22,7 @@ export class MessageRepository extends Repository<Message> {
         throw new UnauthorizedException('You are not authorized to do this');
       }
     } else {
-      console.log("Hello")
+      return null;
     }
   }
 

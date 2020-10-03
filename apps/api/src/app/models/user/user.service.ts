@@ -23,7 +23,6 @@ export class UserService {
     const { username } = updateUserInfo;
 
     const updatedUser = await this.userRepository.findOne({ id: user.id });
-    console.log(updatedUser);
     updatedUser.username = username;
     updatedUser.save();
     return updatedUser;

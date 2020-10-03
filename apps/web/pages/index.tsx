@@ -1,30 +1,40 @@
 import { GetServerSideProps } from 'next';
-import { useCurrentUserQuery, useHelloQuery } from '../generated/graphql';
-
-const Index = () => {
-  const { data, loading, error } = useHelloQuery();
-  const {
-    loading: authLoading,
-    error: AuthError,
-    data: authData,
-  } = useCurrentUserQuery();
-
-  if (error) {
-    console.log(error);
-  }
-  if (authData) {
-    console.log(authData.currentUser);
-  }
-
-  if (loading) return <h2>loading...</h2>;
-
-  return <div>{data.hello}</div>;
+import React from 'react';
+import {
+  HelloDocument,
+  useCurrentUserQuery,
+  useHelloQuery,
+} from '../generated/graphql';
+import cookie from 'cookie';
+import { useApollo } from '../lib/apollo';
+import { ApolloClient } from '@apollo/client';
+// import { getServerSideProps } from './private';
+const Index = ({ data1 }) => {
+  const { data, error } = useHelloQuery({ ssr: true });
+  // const { error: AuthError, data: authData } = useCurrentUserQuery();
+  // if (AuthError) console.log(AuthError);
+  // if (!data) return null;
+  // if (authData) {
+  //   return <div>{authData.currentUser.id}</div>;
+  // }
+  return <div>{data}</div>;
 };
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  console.log(ctx);
+export const getServerSideProps = async (context) => {
+  if (context.req) {
+    const cookies = cookie.parse(context.req.headers.cookie);
+    context.req.headers.authorization = `Bearer ${cookies.jid}`;
+  }
+  const { data } = await context.apolloClient.query({
+    query: HelloDocument,
+  });
+  console.log(data);
   return {
-    props: {},
+    props: {
+      data,
+      apolloState: {
+        data: context.apolloClient.cache.extract(),
+      },
+    },
   };
 };
-
 export default Index;

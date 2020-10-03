@@ -64,7 +64,9 @@ import {
   ApolloProvider,
   ApolloClient,
   HttpLink,
-  InMemoryCache, from, split
+  InMemoryCache,
+  from,
+  split,
 } from '@apollo/client';
 import NextApp, { AppProps } from 'next/app';
 import withApollo, { InitApolloOptions } from '@sotnikov/next-with-apollo';
@@ -72,7 +74,7 @@ import { getDataFromTree } from '@apollo/client/react/ssr';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 
-const httpLink = new HttpLink({
+export const httpLink = new HttpLink({
   uri: 'http://localhost:3333/graphql',
   credentials: 'include',
 });
@@ -98,7 +100,8 @@ export const splitLink =
           );
         },
         wsLink,
-        httpLink
+        httpLink,
+
       );
 
 type Props = AppProps & {
